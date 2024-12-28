@@ -3444,7 +3444,17 @@ def main():
 
     elif choice == "About":
         st.subheader("Project Overview")
-        st.write("This is an intent-based chatbot that uses machine learning and sentiment analysis.")
+        st.write("This project is an intent-based chatbot designed to intelligently interact with users by 
+        recognizing the intent behind their inputs and detecting the emotional tone of the conversation through
+        sentiment analysis. It uses machine learning, specifically a TF-IDF Vectorizer and Logistic Regression, 
+        to classify user inputs into predefined intents, each associated with specific patterns and responses. 
+        The chatbot employs VADER Sentiment Analysis to determine whether the user's message is positive, negative, 
+        or neutral, enhancing the personalization of its responses. Built using Streamlit, the chatbot features a 
+        user-friendly web interface, where users can interact seamlessly and review past conversations logged in a 
+        CSV file, including timestamps, user inputs, and chatbot replies. The modular structure of the chatbot ensures 
+        efficient management of intent recognition, sentiment analysis, and conversation history. With its ability to 
+        dynamically generate context-aware responses, this chatbot can be applied in various domains, such as customer service, 
+        education, or entertainment, making it a versatile tool for human-like interaction.")
 
 if __name__ == "__main__":
     main()
