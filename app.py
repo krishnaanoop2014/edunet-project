@@ -3405,45 +3405,66 @@ def chatbot(input_text):
 
 # Streamlit app
 def main():
-    st.title("Intent-based Chatbot")
+    st.title("🧠 **Intent-based Chatbot**")
+    st.markdown("""
+        <style>
+        .sidebar .sidebar-content {
+            background-color: #f0f0f5;
+        }
+        .stTextInput > div > input {
+            background-color: #f7f7f9; 
+            border: 1px solid #ccc; 
+            border-radius: 10px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     menu = ["Home", "About", "Conversation History"]
     choice = st.sidebar.selectbox("Menu", menu)
 
+    # Initialize session state variables
+    if "chat_log" not in st.session_state:
+        st.session_state["chat_log"] = []  # Store conversation history
+
     if choice == "Home":
-        st.write("Hi, I'm your chatbot. Let's start a conversation!")
-        if "counter" not in st.session_state:
-            st.session_state["counter"] = 0
+        st.markdown("<h3 style='color: #4CAF50;'>🤖 Chat with me!</h3>", unsafe_allow_html=True)
+        user_input = st.text_input("You:", key="user_input", help="Type your message here.")
 
-        user_input = st.text_input("You:", key=f"user_input_{st.session_state['counter']}")
         if user_input:
-            st.session_state["counter"] += 1
             response = chatbot(user_input)
-            st.text_area("Chatbot:", value=response, height=120, max_chars=None)
+            
+            # Display chatbot response
+            st.markdown(f"<p style='background-color:#E3F2FD; color:#0D47A1; padding:10px; border-radius:10px;'>Chatbot: {response}</p>", unsafe_allow_html=True)
 
+            # Save to session state
+            st.session_state["chat_log"].append({"user": user_input, "bot": response})
+
+            # Save to chat log file
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            try:
-                with open('chat_log.csv', 'a', newline='', encoding='utf-8') as csvfile:
+            if not os.path.exists('chat_log.csv'):
+                with open('chat_log.csv', 'w', newline='', encoding='utf-8') as csvfile:
                     csv_writer = csv.writer(csvfile)
-                    csv_writer.writerow([user_input, response, timestamp])
-            except IOError:
-                st.error("Unable to write to chat log.")
+                    csv_writer.writerow(["User Input", "Response", "Timestamp"])  # Write header
+            with open('chat_log.csv', 'a', newline='', encoding='utf-8') as csvfile:
+                csv_writer = csv.writer(csvfile)
+                csv_writer.writerow([user_input, response, timestamp])
 
     elif choice == "Conversation History":
-        st.header("Conversation History")
-        if os.path.exists('chat_log.csv'):
+        st.markdown("<h3 style='color: #FF7043;'>🗂️ Conversation History</h3>", unsafe_allow_html=True)
+        if os.path.exists('chat_log.csv'):  # Check if file exists
             with open('chat_log.csv', 'r', encoding='utf-8') as csvfile:
                 csv_reader = csv.reader(csvfile)
-                next(csv_reader)
+                next(csv_reader, None)  # Skip header row
                 for row in csv_reader:
-                    st.text(f"User Input: {row[0]}")
-                    st.text(f"Chatbot Response: {row[1]}")
-                    st.text(f"Timestamp: {row[2]}")
-                    st.markdown("---")
+                    st.markdown(f"<p><strong>User:</strong> {row[0]}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color: #1565C0;'><strong>Chatbot:</strong> {row[1]}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='font-size: 12px; color: #757575;'>Timestamp: {row[2]}</p>", unsafe_allow_html=True)
+                    st.markdown("<hr>", unsafe_allow_html=True)
         else:
-            st.warning("No conversation history found.")
+            st.warning("No conversation history found. The chat log file does not exist.")
 
     elif choice == "About":
-        st.subheader("Project Overview")
+        st.markdown("<h3 style='color: #5C6BC0;'>ℹ️ About</h3>", unsafe_allow_html=True)
         st.write("""This project is an intent-based chatbot designed to intelligently interact with users by 
         recognizing the intent behind their inputs and detecting the emotional tone of the conversation through
         sentiment analysis. It uses machine learning, specifically a TF-IDF Vectorizer and Logistic Regression, 
@@ -3458,8 +3479,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+               
+               
        
-    
     
 
    
