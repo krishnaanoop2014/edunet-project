@@ -3391,8 +3391,8 @@ analyzer = SentimentIntensityAnalyzer()
 
 def analyze_sentiment(user_message):
     sentiment = analyzer.polarity_scores(user_message)
-    return "Positive" if sentiment['compound'] >= 0.05 else "Negative" if sentiment['compound'] <= -0.05 else "Neutral"
-
+    return "😊 Positive" if sentiment['compound'] >= 0.05 else "😟 Negative" if sentiment['compound'] <= -0.05 else "😐 Neutral"
+    
 def chatbot(input_text):
     input_text_vec = vectorizer.transform([input_text])
     tag = clf.predict(input_text_vec)[0]
